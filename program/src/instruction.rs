@@ -141,13 +141,13 @@ impl VestingInstruction {
                     .unwrap();
                 let mint_address = rest
                     .get(32..64)
-                    .and_then(|slice| slice.try_into().ok())
-                    .map(Pubkey::new)
+                    .and_then(|slice| slice.try_into().ok().map(|arr: [u8; 32]| Pubkey::from(arr)))
+                    .map(Pubkey::from)
                     .ok_or(InvalidInstruction)?;
                 let destination_token_address = rest
                     .get(64..96)
-                    .and_then(|slice| slice.try_into().ok())
-                    .map(Pubkey::new)
+                    .and_then(|slice| slice.try_into().ok().map(|arr: [u8; 32]| Pubkey::from(arr)))
+                    .map(Pubkey::from)
                     .ok_or(InvalidInstruction)?;
                 let number_of_schedules = rest[96..].len() / SCHEDULE_SIZE;
                 let mut schedules: Vec<Schedule> = Vec::with_capacity(number_of_schedules);

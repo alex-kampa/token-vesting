@@ -20,6 +20,7 @@ pub struct VestingScheduleHeader {
 
 impl Sealed for VestingScheduleHeader {}
 
+use std::convert::TryFrom;
 impl Pack for VestingScheduleHeader {
     const LEN: usize = 65;
 
@@ -41,8 +42,8 @@ impl Pack for VestingScheduleHeader {
         if src.len() < 65 {
             return Err(ProgramError::InvalidAccountData)
         }
-        let destination_address = Pubkey::new(&src[..32]);
-        let mint_address = Pubkey::new(&src[32..64]);
+        let destination_address = Pubkey::from(<[u8; 32]>::try_from(&src[..32]).expect("Invalid Pubkey"));
+        let mint_address = Pubkey::from(<[u8; 32]>::try_from(&src[32..64]).expect("Invalid Pubkey"));       
         let is_initialized = src[64] == 1;
         Ok(Self {
             destination_address,
